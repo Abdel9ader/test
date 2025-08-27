@@ -2,13 +2,19 @@
         let exercises = JSON.parse(localStorage.getItem('exercises')) || [];
         let currentCategory = 'push';
         let editingExerciseId = null;
+        let uploadedImage = null;
 
         // DOM Elements
-        const exercisesContainer = document.getElementById('exercisesContainer');
-        const currentCategoryElement = document.getElementById('currentCategory');
-        const categoryIcon = document.getElementById('categoryIcon');
+        const mainPage = document.getElementById('mainPage');
+        const pushPage = document.getElementById('pushPage');
+        const pullPage = document.getElementById('pullPage');
+        const legsPage = document.getElementById('legsPage');
+        
+        const exercisesContainerPush = document.getElementById('exercisesContainerPush');
+        const exercisesContainerPull = document.getElementById('exercisesContainerPull');
+        const exercisesContainerLegs = document.getElementById('exercisesContainerLegs');
+        
         const themeToggle = document.getElementById('themeToggle');
-        const addExerciseBtn = document.getElementById('addExerciseBtn');
         const exerciseModal = document.getElementById('exerciseModal');
         const historyModal = document.getElementById('historyModal');
         const exerciseForm = document.getElementById('exerciseForm');
@@ -18,59 +24,17 @@
         const uploadImageBtn = document.getElementById('uploadImageBtn');
         const imageUpload = document.getElementById('exerciseImageUpload');
         const imagePreview = document.getElementById('imagePreview');
-        let uploadedImage = null;
 
         // Initialize the application
         function init() {
-            // Add some sample data if none exists
+            // No default exercises - start with empty array
             if (exercises.length === 0) {
-                exercises = [
-                    {
-                        id: '1',
-                        name: 'Bench Press',
-                        category: 'push',
-                        currentWeight: 70,
-                        image: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiM4YjVjZjYiIG9wYWNpdHk9IjAuMiIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM4YjVjZjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIwLjM1ZW0iPkJlbmNoIFByZXNzPC90ZXh0Pjwvc3ZnPg==',
-                        history: [
-                            { date: '2023-08-01', weight: 65 },
-                            { date: '2023-08-08', weight: 67.5 },
-                            { date: '2023-08-15', weight: 70 }
-                        ],
-                        lastUpdated: '2023-08-15'
-                    },
-                    {
-                        id: '2',
-                        name: 'Squat',
-                        category: 'legs',
-                        currentWeight: 100,
-                        image: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNlYzQ4OTkiIG9wYWNpdHk9IjAuMiIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNlYzQ4OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIwLjM1ZW0iPlNxdWF0PC90ZXh0Pjwvc3ZnPg==',
-                        history: [
-                            { date: '2023-08-02', weight: 90 },
-                            { date: '2023-08-09', weight: 95 },
-                            { date: '2023-08-16', weight: 100 }
-                        ],
-                        lastUpdated: '2023-08-16'
-                    },
-                    {
-                        id: '3',
-                        name: 'Deadlift',
-                        category: 'pull',
-                        currentWeight: 120,
-                        image: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwNmI2ZDQiIG9wYWNpdHk9IjAuMiIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMwNmI2ZDQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIwLjM1ZW0iPkRlYWRsaWZ0PC90ZXh0Pjwvc3ZnPg==',
-                        history: [
-                            { date: '2023-08-03', weight: 110 },
-                            { date: '2023-08-10', weight: 115 },
-                            { date: '2023-08-17', weight: 120 }
-                        ],
-                        lastUpdated: '2023-08-17'
-                    }
-                ];
                 localStorage.setItem('exercises', JSON.stringify(exercises));
             }
             
             renderExercises();
             setupEventListeners();
-            updateChart();
+            updateCharts();
         }
 
         // Set up event listeners
@@ -81,22 +45,20 @@
             // Category tabs
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', () => {
-                    currentCategory = tab.dataset.category;
-                    updateCategoryDisplay();
-                    renderExercises();
+                    const category = tab.dataset.category;
+                    showCategoryPage(category);
                 });
             });
             
-            // Add exercise button
-            addExerciseBtn.addEventListener('click', () => {
-                editingExerciseId = null;
-                modalTitle.textContent = 'Add New Exercise';
-                exerciseForm.reset();
-                document.getElementById('exerciseCategory').value = currentCategory;
-                imagePreview.innerHTML = '<span>Image preview will appear here</span>';
-                uploadedImage = null;
-                exerciseModal.style.display = 'flex';
-            });
+            // Back buttons
+            document.getElementById('backBtnPush').addEventListener('click', () => showPage('mainPage'));
+            document.getElementById('backBtnPull').addEventListener('click', () => showPage('mainPage'));
+            document.getElementById('backBtnLegs').addEventListener('click', () => showPage('mainPage'));
+            
+            // Add exercise buttons
+            document.getElementById('addExerciseBtnPush').addEventListener('click', () => openAddExerciseModal('push'));
+            document.getElementById('addExerciseBtnPull').addEventListener('click', () => openAddExerciseModal('pull'));
+            document.getElementById('addExerciseBtnLegs').addEventListener('click', () => openAddExerciseModal('legs'));
             
             // Form submission
             exerciseForm.addEventListener('submit', handleExerciseSubmit);
@@ -116,18 +78,37 @@
             });
         }
 
-        // Update category display
-        function updateCategoryDisplay() {
-            currentCategoryElement.textContent = `${capitalizeFirstLetter(currentCategory)} Exercises`;
-            
-            // Update icon based on category
-            if (currentCategory === 'push') {
-                categoryIcon.className = 'fas fa-hands';
-            } else if (currentCategory === 'pull') {
-                categoryIcon.className = 'fas fa-hands';
-            } else if (currentCategory === 'legs') {
-                categoryIcon.className = 'fas fa-running';
+        // Show specific page
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // Show category page
+        function showCategoryPage(category) {
+            currentCategory = category;
+            if (category === 'push') {
+                showPage('pushPage');
+            } else if (category === 'pull') {
+                showPage('pullPage');
+            } else if (category === 'legs') {
+                showPage('legsPage');
             }
+            renderExercises();
+            updateCharts();
+        }
+
+        // Open add exercise modal
+        function openAddExerciseModal(category) {
+            editingExerciseId = null;
+            modalTitle.textContent = 'Add New Exercise';
+            exerciseForm.reset();
+            document.getElementById('exerciseCategory').value = category;
+            imagePreview.innerHTML = '<span>Image preview will appear here</span>';
+            uploadedImage = null;
+            exerciseModal.style.display = 'flex';
         }
 
         // Handle image upload
@@ -161,24 +142,34 @@
                 icon.className = 'fas fa-moon';
                 text.textContent = 'Dark Mode';
             }
+            
+            // Update charts after theme change
+            updateCharts();
         }
 
-        // Render exercises for the current category
+        // Render exercises for all categories
         function renderExercises() {
-            const categoryExercises = exercises.filter(ex => ex.category === currentCategory);
+            renderExercisesForCategory('push', exercisesContainerPush);
+            renderExercisesForCategory('pull', exercisesContainerPull);
+            renderExercisesForCategory('legs', exercisesContainerLegs);
+        }
+
+        // Render exercises for a specific category
+        function renderExercisesForCategory(category, container) {
+            const categoryExercises = exercises.filter(ex => ex.category === category);
             
             if (categoryExercises.length === 0) {
-                exercisesContainer.innerHTML = `
+                container.innerHTML = `
                     <div class="no-exercises">
-                        <p>No exercises found for ${currentCategory} day.</p>
+                        <p>No exercises found for ${category} day.</p>
                         <p>Click "Add Exercise" to get started!</p>
                     </div>
                 `;
                 return;
             }
             
-            exercisesContainer.innerHTML = categoryExercises.map(exercise => `
-                <div class="exercise-card">
+            container.innerHTML = categoryExercises.map(exercise => `
+                <div class="exercise-card ${exercise.category}">
                     <div class="exercise-image">
                         <img src="${exercise.image}" alt="${exercise.name}">
                     </div>
@@ -210,19 +201,19 @@
             `).join('');
             
             // Add event listeners to exercise buttons
-            document.querySelectorAll('.edit-btn').forEach(btn => {
+            container.querySelectorAll('.edit-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => editExercise(e.target.closest('.edit-btn').dataset.id));
             });
             
-            document.querySelectorAll('.delete-btn').forEach(btn => {
+            container.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => deleteExercise(e.target.closest('.delete-btn').dataset.id));
             });
             
-            document.querySelectorAll('.history-btn').forEach(btn => {
+            container.querySelectorAll('.history-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => showHistory(e.target.closest('.history-btn').dataset.id));
             });
             
-            document.querySelectorAll('.update-weight-btn').forEach(btn => {
+            container.querySelectorAll('.update-weight-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => updateWeightPrompt(e.target.closest('.update-weight-btn').dataset.id));
             });
         }
@@ -269,7 +260,7 @@
             localStorage.setItem('exercises', JSON.stringify(exercises));
             exerciseModal.style.display = 'none';
             renderExercises();
-            updateChart();
+            updateCharts();
         }
 
         // Edit an existing exercise
@@ -297,7 +288,7 @@
                 exercises = exercises.filter(ex => ex.id !== id);
                 localStorage.setItem('exercises', JSON.stringify(exercises));
                 renderExercises();
-                updateChart();
+                updateCharts();
             }
         }
 
@@ -358,44 +349,47 @@
             
             localStorage.setItem('exercises', JSON.stringify(exercises));
             renderExercises();
-            updateChart();
+            updateCharts();
         }
 
-        // Update the progress chart
-        function updateChart() {
-            const ctx = document.getElementById('progressChart').getContext('2d');
+        // Update all charts
+        function updateCharts() {
+            updateChart('push', 'progressChartPush');
+            updateChart('pull', 'progressChartPull');
+            updateChart('legs', 'progressChartLegs');
+        }
+
+        // Update a specific chart
+        function updateChart(category, chartId) {
+            const ctx = document.getElementById(chartId).getContext('2d');
+            const categoryExercises = exercises.filter(ex => ex.category === category);
             
             // Prepare data for chart
-            const pushExercises = exercises.filter(ex => ex.category === 'push');
-            const pullExercises = exercises.filter(ex => ex.category === 'pull');
-            const legsExercises = exercises.filter(ex => ex.category === 'legs');
+            const labels = categoryExercises.map(ex => ex.name);
+            const data = categoryExercises.map(ex => ex.currentWeight);
             
-            const data = {
-                labels: ['Push', 'Pull', 'Legs'],
+            const backgroundColor = category === 'push' ? 'rgba(139, 92, 246, 0.7)' : 
+                                  category === 'pull' ? 'rgba(6, 182, 212, 0.7)' : 
+                                  'rgba(236, 72, 153, 0.7)';
+            
+            const borderColor = category === 'push' ? 'rgb(139, 92, 246)' : 
+                              category === 'pull' ? 'rgb(6, 182, 212)' : 
+                              'rgb(236, 72, 153)';
+            
+            const chartData = {
+                labels: labels,
                 datasets: [{
-                    label: 'Total Weight Lifted',
-                    data: [
-                        pushExercises.reduce((sum, ex) => sum + ex.currentWeight, 0),
-                        pullExercises.reduce((sum, ex) => sum + ex.currentWeight, 0),
-                        legsExercises.reduce((sum, ex) => sum + ex.currentWeight, 0)
-                    ],
-                    backgroundColor: [
-                        'rgba(139, 92, 246, 0.7)',
-                        'rgba(6, 182, 212, 0.7)',
-                        'rgba(236, 72, 153, 0.7)'
-                    ],
-                    borderColor: [
-                        'rgb(139, 92, 246)',
-                        'rgb(6, 182, 212)',
-                        'rgb(236, 72, 153)'
-                    ],
+                    label: 'Weight (kg)',
+                    data: data,
+                    backgroundColor: backgroundColor,
+                    borderColor: borderColor,
                     borderWidth: 1
                 }]
             };
             
             const config = {
                 type: 'bar',
-                data: data,
+                data: chartData,
                 options: {
                     responsive: true,
                     plugins: {
@@ -404,19 +398,19 @@
                         },
                         title: {
                             display: true,
-                            text: 'Total Weight by Category'
+                            text: `${capitalizeFirstLetter(category)} Exercises Progress`
                         }
                     }
                 },
             };
             
             // Destroy previous chart if it exists
-            if (window.progressChartInstance) {
-                window.progressChartInstance.destroy();
+            if (window[`${chartId}Instance`]) {
+                window[`${chartId}Instance`].destroy();
             }
             
             // Create new chart
-            window.progressChartInstance = new Chart(ctx, config);
+            window[`${chartId}Instance`] = new Chart(ctx, config);
         }
 
         // Helper function to capitalize first letter
