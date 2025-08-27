@@ -13,7 +13,7 @@
         <header>
             <div class="logo">
                 <i class="fas fa-dumbbell"></i>
-                <span>Gym Progress Tracker</span>
+                <span>TAMRINK</span>
             </div>
             <button class="theme-toggle" id="themeToggle">
                 <i class="fas fa-moon"></i>
@@ -21,7 +21,8 @@
             </button>
         </header>
 
-        <main>
+        <!-- Main Page -->
+        <div class="page active" id="mainPage">
             <div class="tabs">
                 <div class="tab push" data-category="push">
                     <i class="fas fa-hands"></i>
@@ -39,32 +40,100 @@
                     <p>Quads, Hamstrings, Calves</p>
                 </div>
             </div>
+        </div>
 
+        <!-- Push Page -->
+        <div class="page push-page" id="pushPage">
+            <button class="btn back-btn" id="backBtnPush">
+                <i class="fas fa-arrow-left"></i>
+                Back to Main
+            </button>
+            
             <div class="workout-section">
                 <div class="section-header">
                     <div class="category-title">
-                        <i class="fas fa-hands" id="categoryIcon"></i>
-                        <h2 id="currentCategory">Push Exercises</h2>
+                        <i class="fas fa-hands"></i>
+                        <h2>Push Exercises</h2>
                     </div>
-                    <button class="btn" id="addExerciseBtn">
+                    <button class="btn" id="addExerciseBtnPush">
                         <i class="fas fa-plus"></i>
                         Add Exercise
                     </button>
                 </div>
 
-                <div class="exercises-grid" id="exercisesContainer">
+                <div class="exercises-grid" id="exercisesContainerPush">
                     <!-- Exercises will be dynamically inserted here -->
                 </div>
 
                 <div class="progress-chart">
-                    <h3>Progress Overview</h3>
-                    <canvas id="progressChart"></canvas>
+                    <h3>Progress Overview - Push Day</h3>
+                    <canvas id="progressChartPush"></canvas>
                 </div>
             </div>
-        </main>
+        </div>
+
+        <!-- Pull Page -->
+        <div class="page pull-page" id="pullPage">
+            <button class="btn back-btn" id="backBtnPull">
+                <i class="fas fa-arrow-left"></i>
+                Back to Main
+            </button>
+            
+            <div class="workout-section">
+                <div class="section-header">
+                    <div class="category-title">
+                        <i class="fas fa-hands"></i>
+                        <h2>Pull Exercises</h2>
+                    </div>
+                    <button class="btn" id="addExerciseBtnPull">
+                        <i class="fas fa-plus"></i>
+                        Add Exercise
+                    </button>
+                </div>
+
+                <div class="exercises-grid" id="exercisesContainerPull">
+                    <!-- Exercises will be dynamically inserted here -->
+                </div>
+
+                <div class="progress-chart">
+                    <h3>Progress Overview - Pull Day</h3>
+                    <canvas id="progressChartPull"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legs Page -->
+        <div class="page legs-page" id="legsPage">
+            <button class="btn back-btn" id="backBtnLegs">
+                <i class="fas fa-arrow-left"></i>
+                Back to Main
+            </button>
+            
+            <div class="workout-section">
+                <div class="section-header">
+                    <div class="category-title">
+                        <i class="fas fa-running"></i>
+                        <h2>Legs Exercises</h2>
+                    </div>
+                    <button class="btn" id="addExerciseBtnLegs">
+                        <i class="fas fa-plus"></i>
+                        Add Exercise
+                    </button>
+                </div>
+
+                <div class="exercises-grid" id="exercisesContainerLegs">
+                    <!-- Exercises will be dynamically inserted here -->
+                </div>
+
+                <div class="progress-chart">
+                    <h3>Progress Overview - Legs Day</h3>
+                    <canvas id="progressChartLegs"></canvas>
+                </div>
+            </div>
+        </div>
 
         <footer>
-            <p>Gym Progress Tracker | Abdelkader Mohamed</p>
+            <p>Gym Progress Tracker | Developed by Abdelkader Mohamed</p>
         </footer>
     </div>
 
@@ -124,4 +193,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
