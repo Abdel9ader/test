@@ -1,4 +1,4 @@
-// Data storage and initialization
+        // Data storage and initialization
         let exercises = JSON.parse(localStorage.getItem('exercises')) || [];
         let currentCategory = 'push';
         let editingExerciseId = null;
@@ -6,6 +6,7 @@
         // DOM Elements
         const exercisesContainer = document.getElementById('exercisesContainer');
         const currentCategoryElement = document.getElementById('currentCategory');
+        const categoryIcon = document.getElementById('categoryIcon');
         const themeToggle = document.getElementById('themeToggle');
         const addExerciseBtn = document.getElementById('addExerciseBtn');
         const exerciseModal = document.getElementById('exerciseModal');
@@ -14,6 +15,10 @@
         const modalTitle = document.getElementById('modalTitle');
         const cancelBtn = document.getElementById('cancelBtn');
         const closeHistoryBtn = document.getElementById('closeHistoryBtn');
+        const uploadImageBtn = document.getElementById('uploadImageBtn');
+        const imageUpload = document.getElementById('exerciseImageUpload');
+        const imagePreview = document.getElementById('imagePreview');
+        let uploadedImage = null;
 
         // Initialize the application
         function init() {
@@ -25,7 +30,7 @@
                         name: 'Bench Press',
                         category: 'push',
                         currentWeight: 70,
-                        image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGJlbmNoJTIwcHJlc3N8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiM4YjVjZjYiIG9wYWNpdHk9IjAuMiIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM4YjVjZjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIwLjM1ZW0iPkJlbmNoIFByZXNzPC90ZXh0Pjwvc3ZnPg==',
                         history: [
                             { date: '2023-08-01', weight: 65 },
                             { date: '2023-08-08', weight: 67.5 },
@@ -38,7 +43,7 @@
                         name: 'Squat',
                         category: 'legs',
                         currentWeight: 100,
-                        image: 'https://images.unsplash.com/photo-1534258936925-c58bed479fcb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHNxdWF0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNlYzQ4OTkiIG9wYWNpdHk9IjAuMiIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNlYzQ4OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIwLjM1ZW0iPlNxdWF0PC90ZXh0Pjwvc3ZnPg==',
                         history: [
                             { date: '2023-08-02', weight: 90 },
                             { date: '2023-08-09', weight: 95 },
@@ -51,7 +56,7 @@
                         name: 'Deadlift',
                         category: 'pull',
                         currentWeight: 120,
-                        image: 'https://images.unsplash.com/photo-1634224143532-6347d4fad4c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGRlYWRsaWZ0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwNmI2ZDQiIG9wYWNpdHk9IjAuMiIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMwNmI2ZDQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIwLjM1ZW0iPkRlYWRsaWZ0PC90ZXh0Pjwvc3ZnPg==',
                         history: [
                             { date: '2023-08-03', weight: 110 },
                             { date: '2023-08-10', weight: 115 },
@@ -77,7 +82,7 @@
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', () => {
                     currentCategory = tab.dataset.category;
-                    currentCategoryElement.textContent = `${capitalizeFirstLetter(currentCategory)} Exercises`;
+                    updateCategoryDisplay();
                     renderExercises();
                 });
             });
@@ -88,6 +93,8 @@
                 modalTitle.textContent = 'Add New Exercise';
                 exerciseForm.reset();
                 document.getElementById('exerciseCategory').value = currentCategory;
+                imagePreview.innerHTML = '<span>Image preview will appear here</span>';
+                uploadedImage = null;
                 exerciseModal.style.display = 'flex';
             });
             
@@ -98,11 +105,47 @@
             cancelBtn.addEventListener('click', () => exerciseModal.style.display = 'none');
             closeHistoryBtn.addEventListener('click', () => historyModal.style.display = 'none');
             
+            // Image upload
+            uploadImageBtn.addEventListener('click', () => imageUpload.click());
+            imageUpload.addEventListener('change', handleImageUpload);
+            
             // Close modal when clicking outside
             window.addEventListener('click', (e) => {
                 if (e.target === exerciseModal) exerciseModal.style.display = 'none';
                 if (e.target === historyModal) historyModal.style.display = 'none';
             });
+        }
+
+        // Update category display
+        function updateCategoryDisplay() {
+            currentCategoryElement.textContent = `${capitalizeFirstLetter(currentCategory)} Exercises`;
+            
+            // Update icon based on category
+            if (currentCategory === 'push') {
+                categoryIcon.className = 'fas fa-hands';
+            } else if (currentCategory === 'pull') {
+                categoryIcon.className = 'fas fa-hands';
+            } else if (currentCategory === 'legs') {
+                categoryIcon.className = 'fas fa-running';
+            }
+        }
+
+        // Handle image upload
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (!file.type.match('image.*')) {
+                alert('Please select an image file.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                uploadedImage = event.target.result;
+                imagePreview.innerHTML = `<img src="${uploadedImage}" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
         }
 
         // Toggle between light and dark themes
@@ -191,7 +234,9 @@
             const name = document.getElementById('exerciseName').value;
             const category = document.getElementById('exerciseCategory').value;
             const weight = parseFloat(document.getElementById('exerciseWeight').value);
-            const image = document.getElementById('exerciseImage').value;
+            
+            // Use uploaded image or a placeholder if none was uploaded
+            const image = uploadedImage || `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiM4YjVjZjYiIG9wYWNpdHk9IjAuMiIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM4YjVjZjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIwLjM1ZW0iPkV4ZXJjaXNlIEltYWdlPC90ZXh0Pjwvc3ZnPg==`;
             
             if (editingExerciseId) {
                 // Update existing exercise
@@ -239,14 +284,9 @@
             document.getElementById('exerciseCategory').value = exercise.category;
             document.getElementById('exerciseWeight').value = exercise.currentWeight;
             
-            // Select the correct image option if it exists
-            const imageSelect = document.getElementById('exerciseImage');
-            for (let i = 0; i < imageSelect.options.length; i++) {
-                if (imageSelect.options[i].value === exercise.image) {
-                    imageSelect.selectedIndex = i;
-                    break;
-                }
-            }
+            // Set image preview
+            uploadedImage = exercise.image;
+            imagePreview.innerHTML = `<img src="${exercise.image}" alt="Preview">`;
             
             exerciseModal.style.display = 'flex';
         }
