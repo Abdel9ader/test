@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Progress Tracker - Push Pull Legs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-dumbbell"></i>
+                <span>Gym Progress Tracker</span>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+                <span>Dark Mode</span>
+            </button>
+        </header>
+
+        <main>
+            <div class="tabs">
+                <div class="tab push" data-category="push">
+                    <i class="fas fa-hands"></i>
+                    <h2>Push Day</h2>
+                    <p>Chest, Shoulders, Triceps</p>
+                </div>
+                <div class="tab pull" data-category="pull">
+                    <i class="fas fa-hands"></i>
+                    <h2>Pull Day</h2>
+                    <p>Back, Biceps, Rear Delts</p>
+                </div>
+                <div class="tab legs" data-category="legs">
+                    <i class="fas fa-running"></i>
+                    <h2>Leg Day</h2>
+                    <p>Quads, Hamstrings, Calves</p>
+                </div>
+            </div>
+
+            <div class="workout-section">
+                <div class="section-header">
+                    <h2 id="currentCategory">Push Exercises</h2>
+                    <button class="btn" id="addExerciseBtn">
+                        <i class="fas fa-plus"></i>
+                        Add Exercise
+                    </button>
+                </div>
+
+                <div class="exercises-grid" id="exercisesContainer">
+                    <!-- Exercises will be dynamically inserted here -->
+                </div>
+
+                <div class="progress-chart">
+                    <h3>Progress Overview</h3>
+                    <canvas id="progressChart"></canvas>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Gym Progress Tracker &copy; 2025 | Abdelkader Mohamed | Push Pull Legs Routine</p>
+        </footer>
+    </div>
+
+    <!-- Add/Edit Exercise Modal -->
+    <div class="modal" id="exerciseModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Add New Exercise</h2>
+            <form id="exerciseForm">
+                <div class="form-group">
+                    <label for="exerciseName">Exercise Name</label>
+                    <input type="text" id="exerciseName" required>
+                </div>
+                <div class="form-group">
+                    <label for="exerciseCategory">Category</label>
+                    <select id="exerciseCategory" required>
+                        <option value="push">Push</option>
+                        <option value="pull">Pull</option>
+                        <option value="legs">Legs</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exerciseWeight">Current Weight (kg)</label>
+                    <input type="number" id="exerciseWeight" min="0" step="0.5" required>
+                </div>
+                <div class="form-group">
+                    <label for="exerciseImage">Exercise Image</label>
+                    <select id="exerciseImage" required>
+                        <option value="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGJlbmNoJTIwcHJlc3N8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60">Bench Press</option>
+                        <option value="https://images.unsplash.com/photo-1534258936925-c58bed479fcb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHNxdWF0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60">Squat</option>
+                        <option value="https://images.unsplash.com/photo-1634224143532-6347d4fad4c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGRlYWRsaWZ0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60">Deadlift</option>
+                        <option value="https://images.unsplash.com/photo-1598974357801-cbca100e65d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHB1bGx1cHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60">Pull-up</option>
+                        <option value="https://images.unsplash.com/photo-1546483875-ad9014c88eba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZHVtYmJlbGx8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60">Dumbbell Curl</option>
+                        <option value="https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGVnJTIwcHJlc3N8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60">Leg Press</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn">Save Exercise</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Weight History Modal -->
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <h2 id="historyTitle">Weight History</h2>
+            <div id="historyContent">
+                <!-- History items will be inserted here -->
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn" id="closeHistoryBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"> </script>
+</body>
+</html>
