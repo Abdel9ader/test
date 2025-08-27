@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
-    
 </head>
 <body>
     <div class="container">
@@ -43,7 +42,10 @@
 
             <div class="workout-section">
                 <div class="section-header">
-                    <h2 id="currentCategory">Push Exercises</h2>
+                    <div class="category-title">
+                        <i class="fas fa-hands" id="categoryIcon"></i>
+                        <h2 id="currentCategory">Push Exercises</h2>
+                    </div>
                     <button class="btn" id="addExerciseBtn">
                         <i class="fas fa-plus"></i>
                         Add Exercise
@@ -62,7 +64,7 @@
         </main>
 
         <footer>
-            <p>Gym Progress Tracker &copy; 2025 | Abdelkader Mohamed | Push Pull Legs Routine</p>
+            <p>Gym Progress Tracker &copy; 2023 | Push Pull Legs Routine</p>
         </footer>
     </div>
 
@@ -89,14 +91,14 @@
                 </div>
                 <div class="form-group">
                     <label for="exerciseImage">Exercise Image</label>
-                    <select id="exerciseImage" required>
-                        <option value="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGJlbmNoJTIwcHJlc3N8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60">Bench Press</option>
-                        <option value="https://images.unsplash.com/photo-1534258936925-c58bed479fcb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHNxdWF0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60">Squat</option>
-                        <option value="https://images.unsplash.com/photo-1634224143532-6347d4fad4c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGRlYWRsaWZ0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60">Deadlift</option>
-                        <option value="https://images.unsplash.com/photo-1598974357801-cbca100e65d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHB1bGx1cHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60">Pull-up</option>
-                        <option value="https://images.unsplash.com/photo-1546483875-ad9014c88eba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZHVtYmJlbGx8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60">Dumbbell Curl</option>
-                        <option value="https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGVnJTIwcHJlc3N8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60">Leg Press</option>
-                    </select>
+                    <div class="image-preview" id="imagePreview">
+                        <span>Image preview will appear here</span>
+                    </div>
+                    <input type="file" id="exerciseImageUpload" accept="image/*" style="display: none;">
+                    <button type="button" class="btn upload-btn" id="uploadImageBtn">
+                        <i class="fas fa-upload"></i>
+                        Upload Image
+                    </button>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn" id="cancelBtn">Cancel</button>
@@ -119,6 +121,6 @@
         </div>
     </div>
 
-    <script src="script.js"> </script>
+    <script src="script.js"></script>
 </body>
 </html>
